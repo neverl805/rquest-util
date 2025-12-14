@@ -13,8 +13,10 @@ use std::str::FromStr;
 
 // Re-export rquest types that devices need
 pub use rquest::{
-    AlpnProtos, AlpsProtos, CertificateCompressionAlgorithm, Http2Config, Priority, PseudoOrder,
-    SettingsOrder, StreamDependency, StreamId, TlsConfig, TlsVersion,
+    AlpnProtos, AlpsProtos, CertificateCompressionAlgorithm, TlsConfig, TlsVersion,
+};
+pub use rquest::http2::{
+    Priority, PseudoOrder, SettingsOrder, StreamDependency, StreamId,
 };
 
 macro_rules! define_enum {

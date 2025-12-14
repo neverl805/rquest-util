@@ -34,7 +34,13 @@
       "Bash(./target/release/examples/ja3_compare.exe)",
       "Bash(find:*)",
       "Bash(Select-String -Pattern \"(Compiling|Finished|error:|warning:)\")",
-      "Bash(Select-Object -First 30)"
+      "Bash(Select-Object -First 30)",
+      "Bash(Select-String -Pattern \"(error|warning)\" -Context 2,2)",
+      "Bash(Select-Object -First 50)",
+      "Bash(Select-String -Pattern \"(Compiling|Finished|error:)\")",
+      "Bash(cargo tree:*)",
+      "Bash(Select-String -Pattern \"error\\[E0599\\]\" -Context 0,3)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

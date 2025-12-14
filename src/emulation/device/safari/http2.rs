@@ -1,102 +1,133 @@
 // Safari HTTP/2 configuration macros
-// Note: Macros are hygienic and resolve types at the expansion site
 
-macro_rules! headers_priority {
+macro_rules! headers_stream_dependency {
     (1) => {
-        StreamDependency::new(StreamId::zero(), 255, true)
+        StreamDependency::new(StreamId::from(0), 255, true)
     };
     (2) => {
-        StreamDependency::new(StreamId::zero(), 255, false)
+        StreamDependency::new(StreamId::from(0), 255, false)
     };
 }
 
-macro_rules! pseudo_order {
+macro_rules! headers_pseudo_order {
     (1) => {
-        [PseudoOrder::Method, PseudoOrder::Scheme, PseudoOrder::Path, PseudoOrder::Authority]
+        PseudoOrder::builder()
+            .extend([
+                PseudoId::Method,
+                PseudoId::Scheme,
+                PseudoId::Path,
+                PseudoId::Authority,
+            ])
+            .build()
     };
     (2) => {
-        [PseudoOrder::Method, PseudoOrder::Scheme, PseudoOrder::Authority, PseudoOrder::Path]
+        PseudoOrder::builder()
+            .extend([
+                PseudoId::Method,
+                PseudoId::Scheme,
+                PseudoId::Authority,
+                PseudoId::Path,
+            ])
+            .build()
     };
 }
 
 macro_rules! settings_order {
     (1) => {
-        [
-            SettingsOrder::HeaderTableSize,
-            SettingsOrder::EnablePush,
-            SettingsOrder::InitialWindowSize,
-            SettingsOrder::MaxConcurrentStreams,
-            SettingsOrder::MaxFrameSize,
-            SettingsOrder::MaxHeaderListSize,
-            SettingsOrder::UnknownSetting8,
-            SettingsOrder::UnknownSetting9,
-        ]
+        SettingsOrder::builder()
+            .extend([
+                SettingId::HeaderTableSize,
+                SettingId::EnablePush,
+                SettingId::InitialWindowSize,
+                SettingId::MaxConcurrentStreams,
+                SettingId::MaxFrameSize,
+                SettingId::MaxHeaderListSize,
+                SettingId::EnableConnectProtocol,
+                SettingId::NoRfc7540Priorities,
+            ])
+            .build()
     };
     (2) => {
-        [
-            SettingsOrder::HeaderTableSize,
-            SettingsOrder::EnablePush,
-            SettingsOrder::MaxConcurrentStreams,
-            SettingsOrder::InitialWindowSize,
-            SettingsOrder::MaxFrameSize,
-            SettingsOrder::MaxHeaderListSize,
-            SettingsOrder::UnknownSetting8,
-            SettingsOrder::UnknownSetting9,
-        ]
+        SettingsOrder::builder()
+            .extend([
+                SettingId::HeaderTableSize,
+                SettingId::EnablePush,
+                SettingId::MaxConcurrentStreams,
+                SettingId::InitialWindowSize,
+                SettingId::MaxFrameSize,
+                SettingId::MaxHeaderListSize,
+                SettingId::EnableConnectProtocol,
+                SettingId::NoRfc7540Priorities,
+            ])
+            .build()
     };
 }
 
 macro_rules! http2_options {
-    (@base $builder:expr, $headers_priority:expr, $pseudo_order:expr, $settings_order:expr) => {
+    (@base $builder:expr) => {
         $builder
             .max_concurrent_streams(100)
-            .headers_priority($headers_priority)
-            .headers_pseudo_order($pseudo_order)
-            .settings_order($settings_order)
     };
 
     (1) => {
-        http2_options!(@base Http2Config::builder(), headers_priority!(1), pseudo_order!(1), settings_order!(1))
+        http2_options!(@base Http2Options::builder())
             .initial_stream_window_size(2097152)
             .initial_connection_window_size(10551295)
+            .headers_priority(headers_stream_dependency!(1))
+            .headers_pseudo_order(headers_pseudo_order!(1))
+            .settings_order(settings_order!(1))
             .build()
     };
     (2) => {
-        http2_options!(@base Http2Config::builder(), headers_priority!(1), pseudo_order!(1), settings_order!(1))
+        http2_options!(@base Http2Options::builder())
             .initial_stream_window_size(2097152)
             .initial_connection_window_size(10551295)
             .enable_push(false)
+            .headers_priority(headers_stream_dependency!(1))
+            .headers_pseudo_order(headers_pseudo_order!(1))
+            .settings_order(settings_order!(1))
             .build()
     };
     (3) => {
-        http2_options!(@base Http2Config::builder(), headers_priority!(2), pseudo_order!(2), settings_order!(2))
+        http2_options!(@base Http2Options::builder())
             .initial_stream_window_size(2097152)
             .initial_connection_window_size(10485760)
             .enable_push(false)
-            .unknown_setting8(true)
-            .unknown_setting9(true)
+            .enable_connect_protocol(true)
+            .no_rfc7540_priorities(true)
+            .headers_priority(headers_stream_dependency!(2))
+            .headers_pseudo_order(headers_pseudo_order!(2))
+            .settings_order(settings_order!(2))
             .build()
     };
     (4) => {
-        http2_options!(@base Http2Config::builder(), headers_priority!(1), pseudo_order!(1), settings_order!(1))
+        http2_options!(@base Http2Options::builder())
             .initial_stream_window_size(4194304)
             .initial_connection_window_size(10551295)
+            .headers_priority(headers_stream_dependency!(1))
+            .headers_pseudo_order(headers_pseudo_order!(1))
+            .settings_order(settings_order!(1))
             .build()
     };
     (5) => {
-        http2_options!(@base Http2Config::builder(), headers_priority!(1), pseudo_order!(1), settings_order!(1))
+        http2_options!(@base Http2Options::builder())
             .initial_stream_window_size(4194304)
             .initial_connection_window_size(10551295)
             .enable_push(false)
+            .headers_priority(headers_stream_dependency!(1))
+            .headers_pseudo_order(headers_pseudo_order!(1))
+            .settings_order(settings_order!(1))
             .build()
     };
     (6) => {
-        http2_options!(@base Http2Config::builder(), headers_priority!(2), pseudo_order!(2), settings_order!(2))
+        http2_options!(@base Http2Options::builder())
             .initial_stream_window_size(2097152)
             .initial_connection_window_size(10485760)
             .enable_push(false)
-            .unknown_setting9(true)
+            .no_rfc7540_priorities(true)
+            .headers_priority(headers_stream_dependency!(2))
+            .headers_pseudo_order(headers_pseudo_order!(2))
+            .settings_order(settings_order!(2))
             .build()
     };
 }
-

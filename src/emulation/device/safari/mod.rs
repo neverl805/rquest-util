@@ -31,7 +31,7 @@ macro_rules! mod_generator {
             ) -> rquest::EmulationProvider {
                 let tls_config: TlsConfig = $tls_options;
                 let http2_cfg = if !option.skip_http2 {
-                    let http2_config: Http2Config = $http2_options;
+                    let http2_config: Http2Options = $http2_options;
                     Some(http2_config)
                 } else {
                     None

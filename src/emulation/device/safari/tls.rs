@@ -20,6 +20,7 @@ macro_rules! tls_options {
             .cipher_list($cipher_list)
             .sigalgs_list($sigalgs_list)
             .curves($curves)
+            .preserve_tls13_cipher_list(true)
             .min_tls_version(TlsVersion::TLS_1_2)
             .max_tls_version(TlsVersion::TLS_1_3))
     };
@@ -167,6 +168,9 @@ pub struct SafariTlsConfig {
 
     #[builder(setter(into))]
     cipher_list: &'static str,
+
+    #[builder(default, setter(strip_option))]
+    preserve_tls13_cipher_list: Option<bool>,
 }
 
 impl From<SafariTlsConfig> for TlsConfig {
@@ -176,13 +180,12 @@ impl From<SafariTlsConfig> for TlsConfig {
             .grease_enabled(true)
             .enable_ocsp_stapling(true)
             .enable_signed_cert_timestamps(true)
+            .preserve_tls13_cipher_list(val.preserve_tls13_cipher_list)
             .curves(val.curves)
             .sigalgs_list(val.sigalgs_list)
             .cipher_list(val.cipher_list)
             .min_tls_version(val.min_tls_version)
             .max_tls_version(val.max_tls_version)
-            .alpn_protos(AlpnProtos::ALL)
-            .preserve_tls13_cipher_list(true)
             .cert_compression_algorithm(CERT_COMPRESSION_ALGORITHM)
             .build()
     }

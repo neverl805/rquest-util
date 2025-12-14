@@ -22,9 +22,16 @@ pub use rquest::header::ACCEPT_ENCODING;
 // Re-export types from parent
 #[allow(unused_imports)]
 pub use crate::emulation::{
-    AlpnProtos, AlpsProtos, CertificateCompressionAlgorithm, EmulationOS, EmulationOption, Http2Config,
+    AlpnProtos, AlpsProtos, CertificateCompressionAlgorithm, EmulationOS, EmulationOption,
     Priority, PseudoOrder, SettingsOrder, StreamDependency, StreamId, TlsConfig, TlsVersion,
 };
+pub use rquest::http2::Http2Options;
+pub use rquest::{TlsOptions, Priorities};
+// Re-export enum variants for use in macros
+#[allow(unused_imports)]
+pub use rquest::http2::{PseudoId, SettingId};
+#[allow(unused_imports)]
+pub use rquest::http2::{PseudoId::*, SettingId::*};
 
 // Import types from rquest
 pub use rquest::{

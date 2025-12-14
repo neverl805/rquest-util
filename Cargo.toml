@@ -33,16 +33,27 @@ emulation-zstd = []
 [dependencies]
 
 rquest = { git = "https://github.com/neverl805/rquest", features = [
-"json",
-"cookies",
-"socks",
-"gzip",
-"brotli",
-"zstd",
-"deflate",
-"multipart",
-"stream",
+    "json",
+    "cookies",
+    "socks",
+    "gzip",
+    "brotli",
+    "zstd",
+    "deflate",
+    "multipart",
+    "stream",
 ]}
+#rquest = { path = "../rquest", features = [
+#"json",
+#"cookies",
+#"socks",
+#"gzip",
+#"brotli",
+#"zstd",
+#"deflate",
+#"multipart",
+#"stream",
+#]}
 
 serde = { version = "1.0", features = ["derive"], optional = true }
 typed-builder = { version = "0.23.2", optional = true }

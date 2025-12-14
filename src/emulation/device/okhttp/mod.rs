@@ -1,7 +1,5 @@
 use super::*;
 
-use crate::emulation::device::curves::CURVES_1;
-
 macro_rules! mod_generator {
     ($mod_name:ident, $cipher:expr, $ua:expr) => {
         pub(crate) mod $mod_name {
@@ -12,6 +10,8 @@ macro_rules! mod_generator {
         }
     };
 }
+
+const CURVES: &str = join!(":", "X25519", "P-256", "P-384");
 
 const SIGALGS_LIST: &str = join!(
     ":",
@@ -48,8 +48,8 @@ const CIPHER_LIST: &str = join!(
 
 #[derive(TypedBuilder)]
 struct OkHttpTlsConfig {
-    #[builder(default = CURVES_1)]
-    curves: &'static [rquest::SslCurve],
+    #[builder(default = CURVES)]
+    curves: &'static str,
 
     #[builder(default = SIGALGS_LIST)]
     sigalgs_list: &'static str,
@@ -57,11 +57,11 @@ struct OkHttpTlsConfig {
     cipher_list: &'static str,
 }
 
-impl From<OkHttpTlsConfig> for TlsConfig {
+impl From<OkHttpTlsConfig> for TlsOptions {
     fn from(val: OkHttpTlsConfig) -> Self {
-        TlsConfig::builder()
+        TlsOptions::builder()
             .enable_ocsp_stapling(true)
-            .curves(val.curves)
+            .curves_list(val.curves)
             .sigalgs_list(val.sigalgs_list)
             .cipher_list(val.cipher_list)
             .min_tls_version(TlsVersion::TLS_1_2)
@@ -76,38 +76,46 @@ fn build_emulation(
     cipher_list: &'static str,
     user_agent: &'static str,
 ) -> rquest::EmulationProvider {
-    let tls_cfg: TlsConfig = OkHttpTlsConfig::builder()
+    let tls_config: TlsConfig = OkHttpTlsConfig::builder()
         .cipher_list(cipher_list)
         .build()
         .into();
 
     let http2_cfg = if !option.skip_http2 {
-        use PseudoOrder::*;
-        use SettingsOrder::*;
+        let settings_order = SettingsOrder::builder()
+            .extend([
+                SettingId::HeaderTableSize,
+                SettingId::EnablePush,
+                SettingId::MaxConcurrentStreams,
+                SettingId::InitialWindowSize,
+                SettingId::MaxFrameSize,
+                SettingId::MaxHeaderListSize,
+                SettingId::EnableConnectProtocol,
+                SettingId::NoRfc7540Priorities,
+            ])
+            .build();
 
-        let settings_order = [
-            HeaderTableSize,
-            EnablePush,
-            MaxConcurrentStreams,
-            InitialWindowSize,
-            MaxFrameSize,
-            MaxHeaderListSize,
-            UnknownSetting8,
-            UnknownSetting9,
-        ];
+        let http2_opts = Http2Options::builder()
+            .initial_window_size(6291456)
+            .initial_connection_window_size(15728640)
+            .max_concurrent_streams(1000)
+            .max_header_list_size(262144)
+            .header_table_size(65536)
+            .headers_stream_dependency(StreamDependency::new(StreamId::zero(), 255, true))
+            .headers_pseudo_order(
+                PseudoOrder::builder()
+                    .extend([
+                        PseudoId::Method,
+                        PseudoId::Path,
+                        PseudoId::Authority,
+                        PseudoId::Scheme,
+                    ])
+                    .build(),
+            )
+            .settings_order(settings_order)
+            .build();
 
-        Some(
-            Http2Config::builder()
-                .initial_stream_window_size(6291456)
-                .initial_connection_window_size(15728640)
-                .max_concurrent_streams(1000)
-                .max_header_list_size(262144)
-                .header_table_size(65536)
-                .headers_priority(StreamDependency::new(StreamId::from(0), 255, true))
-                .headers_pseudo_order([Method, Path, Authority, Scheme])
-                .settings_order(settings_order)
-                .build(),
-        )
+        Some(http2_opts)
     } else {
         None
     };
@@ -132,7 +140,7 @@ fn build_emulation(
     };
 
     rquest::EmulationProvider::builder()
-        .tls_config(tls_cfg)
+        .tls_config(tls_config)
         .http2_config(http2_cfg)
         .default_headers(default_headers)
         .build()
@@ -221,12 +229,6 @@ mod_generator!(
 );
 
 mod_generator!(
-    okhttp4_12,
-    CIPHER_LIST,
-    "GM-Android/6.115.0 (241020100; M:Google Pixel 8; O:34; D:3f8a5b92c4d7e1a6) ObsoleteUrlFactory/1.0 OkHttp/4.12.0"
-);
-
-mod_generator!(
     okhttp4_9,
     join!(
         ":",
@@ -249,9 +251,10 @@ mod_generator!(
     "GM-Android/6.111.1 (240460200; M:motorola moto g power (2021); O:30; D:76ba9f6628d198c8) ObsoleteUrlFactory/1.0 OkHttp/4.9"
 );
 
+mod_generator!(okhttp4_12, CIPHER_LIST, "okhttp/4.12.0");
+
 mod_generator!(
     okhttp5,
     CIPHER_LIST,
     "NRC Audio/2.0.6 (nl.nrc.audio; build:36; Android 14; Sdk:34; Manufacturer:OnePlus; Model: CPH2609) OkHttp/5.0.0-alpha2"
 );
-
