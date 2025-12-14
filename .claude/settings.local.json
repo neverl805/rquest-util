@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /b:*)",
+      "Bash(dir:*)",
+      "Bash(md \"G:\\myself_rust_p\\rquest-util\\src\\emulation\\device\\opera\")",
+      "Bash(cargo build:*)",
+      "Bash(cargo check:*)",
+      "Bash(xcopy:*)",
+      "Bash(robocopy:*)",
+      "Bash(copy /Y:*)",
+      "Bash(powershell:*)",
+      "Bash(cargo doc:*)",
+      "Bash(grep:*)",
+      "Bash(1)",
+      "Bash(cargo clean:*)",
+      "Bash(targetreleaseexamplesquick_test.exe)",
+      "Bash(./target/release/examples/quick_test.exe:*)",
+      "Bash(./target/release/examples/safari_debug.exe:*)",
+      "Bash(cargo run:*)",
+      "Bash(ls:*)",
+      "Bash(python3:*)",
+      "Bash(./target/release/examples/safari_final_test.exe:*)",
+      "Bash(./target/release/examples/safari_fingerprint_test.exe:*)",
+      "Bash(taskkill:*)",
+      "Bash(Select-String -Pattern \"(Compiling rquest|Finished|error:)\")",
+      "Bash(Select-Object -First 20)",
+      "Bash(./target/release/examples/test_browserleaks.exe)",
+      "Bash(./target/release/examples/firefox_fingerprint_test.exe:*)",
+      "Bash(cargo test:*)",
+      "Bash(./target/release/examples/firefox_debug.exe)",
+      "Bash(./target/release/examples/test_ff128.exe)",
+      "Bash(./target/release/examples/firefox_145_debug.exe:*)",
+      "Bash(./target/release/examples/ja3_compare.exe)",
+      "Bash(find:*)",
+      "Bash(Select-String -Pattern \"(Compiling|Finished|error:|warning:)\")",
+      "Bash(Select-Object -First 30)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

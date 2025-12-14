@@ -1,0 +1,72 @@
+[package]
+name = "rquest-util"
+description = "Common utilities for rquest - Browser emulation with TLS/JA3/JA4/HTTP2 fingerprints"
+version = "3.0.0"
+edition = "2021"
+rust-version = "1.85"
+license = "GPL-3.0"
+authors = ["rquest-util contributors"]
+keywords = ["http", "client", "emulation", "ja3", "ja4"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[features]
+default = ["emulation"]
+
+# Emulation devices
+emulation = ["dep:typed-builder"]
+
+# Emulation devices with serde
+emulation-serde = ["dep:serde"]
+
+# Emulation devices with random data
+emulation-rand = ["emulation", "dep:strum_macros", "dep:strum"]
+
+# Emulation compression algorithms
+emulation-gzip = []
+emulation-brotli = []
+emulation-deflate = []
+emulation-zstd = []
+
+[dependencies]
+
+rquest = { path = "https://github.com/neverl805/rquest", features = [
+"json",
+"cookies",
+"socks",
+"gzip",
+"brotli",
+"zstd",
+"deflate",
+"multipart",
+"stream",
+]}
+
+serde = { version = "1.0", features = ["derive"], optional = true }
+typed-builder = { version = "0.23.2", optional = true }
+strum = { version = "0.27", optional = true }
+strum_macros = { version = "0.27", optional = true }
+
+[dev-dependencies]
+tokio = { version = "1.48", features = ["full"] }
+serde_json = "1.0"
+
+[lib]
+doctest = false
+
+[[example]]
+name = "emulation"
+path = "examples/emulation.rs"
+required-features = ["emulation"]
+
+[[example]]
+name = "quick_test"
+path = "examples/quick_test.rs"
+required-features = ["emulation"]
+
+[[example]]
+name = "advanced"
+path = "examples/advanced.rs"
+required-features = ["emulation"]
