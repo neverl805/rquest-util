@@ -32,7 +32,7 @@ emulation-zstd = []
 
 [dependencies]
 
-rquest = { path = "https://github.com/neverl805/rquest", features = [
+rquest = { git = "https://github.com/neverl805/rquest", features = [
 "json",
 "cookies",
 "socks",
