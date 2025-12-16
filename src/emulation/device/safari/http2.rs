@@ -1,11 +1,9 @@
-// Safari HTTP/2 configuration macros
-
 macro_rules! headers_stream_dependency {
     (1) => {
-        StreamDependency::new(StreamId::from(0), 255, true)
+        StreamDependency::new(StreamId::zero(), 255, true)
     };
     (2) => {
-        StreamDependency::new(StreamId::from(0), 255, false)
+        StreamDependency::new(StreamId::zero(), 255, false)
     };
 }
 
@@ -71,61 +69,61 @@ macro_rules! http2_options {
 
     (1) => {
         http2_options!(@base Http2Options::builder())
-            .initial_stream_window_size(2097152)
+            .initial_window_size(2097152)
             .initial_connection_window_size(10551295)
-            .headers_priority(headers_stream_dependency!(1))
+            .headers_stream_dependency(headers_stream_dependency!(1))
             .headers_pseudo_order(headers_pseudo_order!(1))
             .settings_order(settings_order!(1))
             .build()
     };
     (2) => {
         http2_options!(@base Http2Options::builder())
-            .initial_stream_window_size(2097152)
+            .initial_window_size(2097152)
             .initial_connection_window_size(10551295)
             .enable_push(false)
-            .headers_priority(headers_stream_dependency!(1))
+            .headers_stream_dependency(headers_stream_dependency!(1))
             .headers_pseudo_order(headers_pseudo_order!(1))
             .settings_order(settings_order!(1))
             .build()
     };
     (3) => {
         http2_options!(@base Http2Options::builder())
-            .initial_stream_window_size(2097152)
+            .initial_window_size(2097152)
             .initial_connection_window_size(10485760)
             .enable_push(false)
             .enable_connect_protocol(true)
             .no_rfc7540_priorities(true)
-            .headers_priority(headers_stream_dependency!(2))
+            .headers_stream_dependency(headers_stream_dependency!(2))
             .headers_pseudo_order(headers_pseudo_order!(2))
             .settings_order(settings_order!(2))
             .build()
     };
     (4) => {
         http2_options!(@base Http2Options::builder())
-            .initial_stream_window_size(4194304)
+            .initial_window_size(4194304)
             .initial_connection_window_size(10551295)
-            .headers_priority(headers_stream_dependency!(1))
+            .headers_stream_dependency(headers_stream_dependency!(1))
             .headers_pseudo_order(headers_pseudo_order!(1))
             .settings_order(settings_order!(1))
             .build()
     };
     (5) => {
         http2_options!(@base Http2Options::builder())
-            .initial_stream_window_size(4194304)
+            .initial_window_size(4194304)
             .initial_connection_window_size(10551295)
             .enable_push(false)
-            .headers_priority(headers_stream_dependency!(1))
+            .headers_stream_dependency(headers_stream_dependency!(1))
             .headers_pseudo_order(headers_pseudo_order!(1))
             .settings_order(settings_order!(1))
             .build()
     };
     (6) => {
         http2_options!(@base Http2Options::builder())
-            .initial_stream_window_size(2097152)
+            .initial_window_size(2097152)
             .initial_connection_window_size(10485760)
             .enable_push(false)
             .no_rfc7540_priorities(true)
-            .headers_priority(headers_stream_dependency!(2))
+            .headers_stream_dependency(headers_stream_dependency!(2))
             .headers_pseudo_order(headers_pseudo_order!(2))
             .settings_order(settings_order!(2))
             .build()

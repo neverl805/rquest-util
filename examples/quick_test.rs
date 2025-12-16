@@ -26,7 +26,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .emulation(Emulation::Chrome142)
         .build()?;
 
-    let resp = client.get("https://tls.peet.ws/api/all").send().await?;
+    let resp = client.get("https://tls.browserleaks.com").send().await?;
+    // let resp = client.get("https://tls.peet.ws/api/all").send().await?;
     let json: serde_json::Value = resp.json().await?;
     println!("{}",json);
     // Test 3: Check User-Agent

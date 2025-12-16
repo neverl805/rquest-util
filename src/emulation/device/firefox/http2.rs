@@ -45,15 +45,17 @@ macro_rules! http2_options {
     (@base $builder:expr) => {
         $builder
             .initial_stream_window_size(131072)
-            .initial_connection_window_size(12582912)
             .max_frame_size(16384)
+            .initial_connection_window_size(12517377 + 65535)
             .headers_pseudo_order(pseudo_order!())
             .settings_order(settings_order!())
     };
 
     (1) => {
         http2_options!(@base Http2Options::builder())
+            .initial_stream_id(3)
             .header_table_size(65536)
+            .enable_push(false)
             .headers_stream_dependency(headers_stream_dependency!(1))
             .build()
     };
@@ -96,106 +98,20 @@ macro_rules! http2_options {
     };
     (3) => {
         http2_options!(@base Http2Options::builder())
-            .initial_stream_id(15)
+            .initial_stream_id(3)
             .header_table_size(65536)
-            .initial_connection_window_size(12517377 + 65535)
-            .headers_stream_dependency(headers_stream_dependency!(2))
-            .settings_order(
-                SettingsOrder::builder()
-                    .extend([
-                        HeaderTableSize,
-                        EnablePush,
-                        MaxConcurrentStreams,
-                        InitialWindowSize,
-                        MaxFrameSize,
-                        MaxHeaderListSize,
-                        EnableConnectProtocol,  // Was UnknownSetting8
-                        NoRfc7540Priorities,     // Was UnknownSetting9
-                    ])
-                    .build(),
-            )
-            .priorities(
-                Priorities::builder()
-                    .extend([
-                        Priority::new(
-                            StreamId::from(3),
-                            StreamDependency::new(StreamId::from(0), 200, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(5),
-                            StreamDependency::new(StreamId::from(0), 100, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(7),
-                            StreamDependency::new(StreamId::from(0), 0, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(9),
-                            StreamDependency::new(StreamId::from(7), 0, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(11),
-                            StreamDependency::new(StreamId::from(3), 0, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(13),
-                            StreamDependency::new(StreamId::from(0), 240, false),
-                        ),
-                    ])
-                    .build(),
-            )
+            .enable_push(false)
+            .max_concurrent_streams(0)
+            .headers_stream_dependency(headers_stream_dependency!(1))
             .build()
     };
     (4) => {
         http2_options!(@base Http2Options::builder())
-            .initial_stream_id(15)
-            .header_table_size(65536)
-            .initial_connection_window_size(12517377 + 65535)
-            .headers_stream_dependency(headers_stream_dependency!(2))
-            .settings_order(
-                SettingsOrder::builder()
-                    .extend([
-                        HeaderTableSize,
-                        EnablePush,
-                        InitialWindowSize,
-                        MaxConcurrentStreams,
-                        MaxFrameSize,
-                        MaxHeaderListSize,
-                        EnableConnectProtocol,  // Was UnknownSetting8
-                        NoRfc7540Priorities,     // Was UnknownSetting9
-                    ])
-                    .build(),
-            )
-            .priorities(
-                Priorities::builder()
-                    .extend([
-                        Priority::new(
-                            StreamId::from(3),
-                            StreamDependency::new(StreamId::from(0), 200, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(5),
-                            StreamDependency::new(StreamId::from(0), 100, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(7),
-                            StreamDependency::new(StreamId::from(0), 0, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(9),
-                            StreamDependency::new(StreamId::from(7), 0, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(11),
-                            StreamDependency::new(StreamId::from(3), 0, false),
-                        ),
-                        Priority::new(
-                            StreamId::from(13),
-                            StreamDependency::new(StreamId::from(0), 240, false),
-                        ),
-                    ])
-                    .build(),
-            )
+            .initial_stream_id(3)
+            .header_table_size(4096)
+            .enable_push(false)
+            .initial_stream_window_size(32768)
+            .headers_stream_dependency(headers_stream_dependency!(1))
             .build()
     };
 }
