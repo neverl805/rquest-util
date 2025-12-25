@@ -177,8 +177,11 @@ define_enum!(
     Safari18_5 => ("safari_18.5", safari18_5::emulation),
     Safari26 => ("safari_26", safari26::emulation),
     Safari26_1 => ("safari_26.1", safari26_1::emulation),
+    Safari26_2 => ("safari_26.2", safari26_2::emulation),
     SafariIPad26 => ("safari_ipad_26", safari_ipad_26::emulation),
+    SafariIPad26_2 => ("safari_ipad_26_2", safari_ipad_26_2::emulation),
     SafariIos26 => ("safari_ios_26", safari_ios_26::emulation),
+    SafariIos26_2 => ("safari_ios_26_2", safari_ios_26_2::emulation),
 
     // Firefox versions
     Firefox109 => ("firefox_109", ff109::emulation),
@@ -298,8 +301,11 @@ impl FromStr for Emulation {
             "safari_18.5" => Ok(Emulation::Safari18_5),
             "safari_26" => Ok(Emulation::Safari26),
             "safari_26.1" => Ok(Emulation::Safari26_1),
+            "safari_26.2" => Ok(Emulation::Safari26_2),
             "safari_ipad_26" => Ok(Emulation::SafariIPad26),
+            "safari_ipad_26.2" => Ok(Emulation::SafariIPad26_2),
             "safari_ios_26" => Ok(Emulation::SafariIos26),
+            "safari_ios_26.2" => Ok(Emulation::SafariIos26_2),
 
             // Firefox versions
             "firefox_109" => Ok(Emulation::Firefox109),

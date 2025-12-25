@@ -14,7 +14,7 @@ use crate::emulation::device::curves::CURVES_1;
 mod_generator!(
     opera116,
     tls_options!(7, CURVES_1),
-    http2_options!(3),
+    http2_options!(),
     header_initializer,
     [
         (
