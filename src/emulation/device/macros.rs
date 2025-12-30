@@ -7,6 +7,7 @@ macro_rules! header_chrome_sec_ch_ua {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! header_chrome_sec_fetch {
     ($headers:expr) => {
         $headers.insert("sec-fetch-dest", HeaderValue::from_static("document"));
@@ -21,6 +22,7 @@ macro_rules! header_chrome_ua {
     };
 }
 
+#[allow(unused_macros)]
 #[allow(unused_macro_rules)]
 macro_rules! header_chrome_accept {
     ($headers:expr) => {
